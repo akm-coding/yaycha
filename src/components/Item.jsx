@@ -8,9 +8,16 @@ import {
 
 import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "../context/ThemedApp";
 
-export default function Item({ item, remove, primary, comment }) {
+export default function Item({ item, remove, primary, comment, owner }) {
   const navigate = useNavigate();
+  const { auth } = useApp();
+
+  function isOwner() {
+    if (!auth) return false;
+    return auth.id == item?.userId || auth.id == owner;
+  }
 
   return (
     <Card sx={{ mb: 2 }}>
@@ -18,7 +25,7 @@ export default function Item({ item, remove, primary, comment }) {
       <CardContent
         onClick={() => {
           if (comment) return false;
-          navigate(`/comments/${item.id}`);
+          navigate(`/comments/${item?.id}`);
         }}
         sx={{ cursor: "pointer" }}
       >
@@ -42,18 +49,25 @@ export default function Item({ item, remove, primary, comment }) {
               {/* {format(item.created(), "MM.DD.YYYY")} */}
             </Typography>
           </Box>
-          <IconButton
-            size="small"
-            onClick={(e) => {
-              remove(item.id);
-              e.stopPropagation();
-            }}
-          >
-            <DeleteIcon color="inherit" fontSize="inherit" />
-          </IconButton>
+          {isOwner() && (
+            <IconButton
+              sx={{ color: "text.fade" }}
+              size="small"
+              onClick={(e) => {
+                remove(item?.id);
+                e.stopPropagation();
+              }}
+            >
+              <DeleteIcon color="inherit" fontSize="inherit" />
+            </IconButton>
+          )}
         </Box>
-        <Typography sx={{ my: 3 }}>{item.content}</Typography>
+        <Typography sx={{ my: 3 }}>{item?.content}</Typography>
         <Box
+          onClick={(e) => {
+            navigate(`/profile/${item?.id}`);
+            e.stopPropagation();
+          }}
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -62,7 +76,7 @@ export default function Item({ item, remove, primary, comment }) {
           }}
         >
           <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item.user.name}</Typography>
+          <Typography variant="caption">{item?.name}</Typography>
         </Box>
       </CardContent>
     </Card>
