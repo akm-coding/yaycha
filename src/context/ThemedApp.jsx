@@ -6,6 +6,7 @@ import { deepPurple, grey } from "@mui/material/colors";
 
 import Template from "../Template";
 import { Comments, Home, Likes, Login, Profile, Register } from "../pages";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const AppContext = createContext();
 
@@ -46,6 +47,8 @@ const router = createBrowserRouter([
   },
 ]);
 
+export const queryClient = new QueryClient();
+
 export default function ThemedApp() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -82,7 +85,9 @@ export default function ThemedApp() {
           setMode,
         }}
       >
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
         <CssBaseline />
       </AppContext.Provider>
     </ThemeProvider>
