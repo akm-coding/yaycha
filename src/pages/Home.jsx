@@ -55,7 +55,7 @@ export default function Home() {
   return (
     <Box>
       {showForm && auth && <Form add={add} />}
-      {data.map((item) => {
+      {data?.map((item) => {
         return <Item key={item.id} item={item} remove={remove.mutate} />;
       })}
     </Box>

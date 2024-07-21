@@ -9,6 +9,7 @@ import {
 import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/ThemedApp";
+import { CommentButton, LikeButton } from ".";
 
 export default function Item({ item, remove, primary, comment, owner }) {
   const navigate = useNavigate();
@@ -64,19 +65,32 @@ export default function Item({ item, remove, primary, comment, owner }) {
         </Box>
         <Typography sx={{ my: 3 }}>{item?.content}</Typography>
         <Box
-          onClick={(e) => {
-            navigate(`/profile/${item?.id}`);
-            e.stopPropagation();
-          }}
           sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: 1,
+            justifyContent: "space-between",
           }}
         >
-          <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item?.name}</Typography>
+          <Box
+            onClick={(e) => {
+              navigate(`/profile/${item?.id}`);
+              e.stopPropagation();
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <UserIcon fontSize="12" color="info" />
+            <Typography variant="caption">{item?.name}</Typography>
+          </Box>
+          <Box>
+            <LikeButton item={item} comment={comment} />
+            <CommentButton item={item} comment={comment} />
+          </Box>
         </Box>
       </CardContent>
     </Card>
