@@ -10,6 +10,7 @@ import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/ThemedApp";
 import { CommentButton, LikeButton } from ".";
+import { formatRelative } from "date-fns";
 
 export default function Item({ item, remove, primary, comment, owner }) {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export default function Item({ item, remove, primary, comment, owner }) {
           >
             <TimeIcon fontSize="10" color="success" />
             <Typography variant="caption" sx={{ color: green[500] }}>
-              {/* {format(item.created(), "MM.DD.YYYY")} */}
+              {formatRelative(item?.created, new Date())}
             </Typography>
           </Box>
           {isOwner() && (
@@ -74,7 +75,7 @@ export default function Item({ item, remove, primary, comment, owner }) {
         >
           <Box
             onClick={(e) => {
-              navigate(`/profile/${item?.id}`);
+              navigate(`/profile/${item?.user.id}`);
               e.stopPropagation();
             }}
             sx={{
@@ -85,7 +86,9 @@ export default function Item({ item, remove, primary, comment, owner }) {
             }}
           >
             <UserIcon fontSize="12" color="info" />
-            <Typography variant="caption">{item?.name}</Typography>
+            <Typography variant="caption">
+              {item?.user.name ? item?.user.name : item?.name}
+            </Typography>
           </Box>
           <Box>
             <LikeButton item={item} comment={comment} />

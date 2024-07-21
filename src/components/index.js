@@ -6,3 +6,4 @@ export { default as AppDrawer } from "./AppDrawer";
 export { default as UserList } from "./UserList";
 export { default as LikeButton } from "./LikeButton";
 export { default as CommentButton } from "./CommentButton";
+export { default as FollowButton } from "./FollowButton";

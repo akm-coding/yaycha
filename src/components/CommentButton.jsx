@@ -11,7 +11,7 @@ export default function Item({ item, comment }) {
             <CommentIcon fontSize="small" color="info" />
           </IconButton>
           <Button sx={{ color: "text.fade" }} variant="text" size="small">
-            {item.comments.length}
+            {item?.comments.length ? item?.comments.length : 0}
           </Button>
         </ButtonGroup>
       )}

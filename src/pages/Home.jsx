@@ -14,6 +14,7 @@ export default function Home() {
     const res = await fetch(`${api}/content/posts`);
     return res.json();
   });
+  console.log("Home==>", data);
 
   const remove = useMutation(
     async (id) => {
@@ -56,6 +57,7 @@ export default function Home() {
     <Box>
       {showForm && auth && <Form add={add} />}
       {data?.map((item) => {
+        console.log("Data Loop==>", item);
         return <Item key={item.id} item={item} remove={remove.mutate} />;
       })}
     </Box>

@@ -1,6 +1,6 @@
-import { Alert, Avatar, Box, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { Item } from "../components";
+import { FollowButton, Item } from "../components";
 import { pink } from "@mui/material/colors";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -10,9 +10,10 @@ export default function Profile() {
   const { id } = useParams();
 
   const { isLoading, isError, error, data } = useQuery(
-    `users/${id}`,
+    ["users", id],
     async () => fetchUser(id)
   );
+  console.log("User data==>", data);
 
   if (isError) {
     return (
@@ -46,6 +47,7 @@ export default function Profile() {
           <Typography sx={{ fontSize: "0.8em", color: "text.fade" }}>
             {data?.bio}
           </Typography>
+          <FollowButton user={data} />
         </Box>
       </Box>
       {Array.isArray(data?.posts) &&
