@@ -1,42 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { queryClient, useApp } from "../context/ThemedApp";
-import { Alert, Box } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { Form, Item } from "../components";
 import { useQuery, useMutation } from "react-query";
-import { postPost } from "../libs/fetcher";
-
-const api = import.meta.env.VITE_API;
+import {
+  deletePost,
+  fetchFollowingPosts,
+  fetchPosts,
+  postPost,
+} from "../libs/fetcher";
 
 export default function Home() {
+  const [showLatest, setShowLatest] = useState(true);
   const { showForm, setGlobalMsg, auth } = useApp();
 
-  const { isLoading, isError, error, data } = useQuery("posts", async () => {
-    const res = await fetch(`${api}/content/posts`);
-    return res.json();
-  });
-  console.log("Home==>", data);
-
-  const remove = useMutation(
-    async (id) => {
-      await fetch(`${api}/content/posts/${id}`, {
-        method: "DELETE",
-      });
-    },
-    {
-      onMutate: (id) => {
-        queryClient.cancelQueries("posts");
-        queryClient.setQueryData("posts", (old) =>
-          old.filter((item) => item.id !== id)
-        );
-        setGlobalMsg("A post deleted");
-      },
+  const { isLoading, isError, error, data } = useQuery(
+    ["posts", showLatest],
+    () => {
+      if (showLatest) return fetchPosts();
+      else return fetchFollowingPosts();
     }
   );
 
-  const add = useMutation(async (content) => postPost(content), {
+  const remove = useMutation(async (id) => deletePost(id), {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries("posts");
+      await queryClient.setQueryData(["posts", showLatest], (old) =>
+        old.filter((item) => item.id !== id)
+      );
+      setGlobalMsg("A post deleted");
+    },
+  });
+
+  const add = useMutation((content) => postPost(content), {
     onSuccess: async (post) => {
       await queryClient.cancelQueries("posts");
-      await queryClient.setQueryData("posts", (old) => [post, ...old]);
+      await queryClient.setQueryData(["posts", showLatest], (old) => [
+        post,
+        ...old,
+      ]);
       setGlobalMsg("A post added");
     },
   });
@@ -56,8 +58,25 @@ export default function Home() {
   return (
     <Box>
       {showForm && auth && <Form add={add} />}
+      {auth && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            mb: 1,
+          }}
+        >
+          <Button disabled={showLatest} onClick={() => setShowLatest(true)}>
+            Latest
+          </Button>
+          <Typography sx={{ color: "text.fade", fontSize: 15 }}>|</Typography>
+          <Button disabled={!showLatest} onClick={() => setShowLatest(false)}>
+            Following
+          </Button>
+        </Box>
+      )}
       {data?.map((item) => {
-        console.log("Data Loop==>", item);
         return <Item key={item.id} item={item} remove={remove.mutate} />;
       })}
     </Box>

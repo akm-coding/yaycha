@@ -13,7 +13,6 @@ export default function Profile() {
     ["users", id],
     async () => fetchUser(id)
   );
-  console.log("User data==>", data);
 
   if (isError) {
     return (

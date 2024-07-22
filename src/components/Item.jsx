@@ -86,9 +86,7 @@ export default function Item({ item, remove, primary, comment, owner }) {
             }}
           >
             <UserIcon fontSize="12" color="info" />
-            <Typography variant="caption">
-              {item?.user.name ? item?.user.name : item?.name}
-            </Typography>
+            <Typography variant="caption">{item?.user.name}</Typography>
           </Box>
           <Box>
             <LikeButton item={item} comment={comment} />

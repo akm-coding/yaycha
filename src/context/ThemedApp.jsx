@@ -5,9 +5,19 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { deepPurple, grey } from "@mui/material/colors";
 
 import Template from "../Template";
-import { Comments, Home, Likes, Login, Profile, Register } from "../pages";
+import {
+  Comments,
+  Home,
+  Likes,
+  Login,
+  Notis,
+  Profile,
+  Register,
+  Search,
+} from "../pages";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { fetchVerify } from "../libs/fetcher";
+import AppSocket from "../AppSocket";
 
 const AppContext = createContext();
 
@@ -43,6 +53,14 @@ const router = createBrowserRouter([
       {
         path: "/likes/:id/:type",
         element: <Likes />,
+      },
+      {
+        path: "/search",
+        element: <Search />,
+      },
+      {
+        path: "/notis",
+        element: <Notis />,
       },
     ],
   },
@@ -94,6 +112,7 @@ export default function ThemedApp() {
       >
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
+          <AppSocket />
         </QueryClientProvider>
         <CssBaseline />
       </AppContext.Provider>

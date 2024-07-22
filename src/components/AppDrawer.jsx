@@ -114,7 +114,12 @@ export default function AppDrawer() {
           {!auth && (
             <>
               <ListItem>
-                <ListItemButton onClick={() => navigate("/register")}>
+                <ListItemButton
+                  onClick={() => {
+                    navigate("/register");
+                    setShowDrawer(false);
+                  }}
+                >
                   <ListItemIcon>
                     <RegisterIcon />
                   </ListItemIcon>
